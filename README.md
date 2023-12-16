@@ -32,4 +32,8 @@ En el dataset user_reviews, crearemos una columna llamada 'sentiment_analysis' a
    Devuelve el top 3 de juegos MENOS recomendados por usuarios para el año dado. (reviews.recommend = False y comentarios negativos)
 
 + def **sentiment_analysis( *`año` : int* )**:
-    Según el año de lanzamiento, se devuelve una lista con la cantidad de registros de reseñas de usuarios que se encuentren categorizados con un análisis de sentimiento.       
+    Según el año de lanzamiento, se devuelve una lista con la cantidad de registros de reseñas de usuarios que se encuentren categorizados con un análisis de sentimiento.
+  
+# Modelo de aprendizaje automático:
+Se propone entrenar nuestro modelo de machine learning para armar un sistema de recomendación.
+
