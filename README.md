@@ -37,3 +37,10 @@ En el dataset user_reviews, crearemos una columna llamada 'sentiment_analysis' a
 # Modelo de aprendizaje automático:
 Se propone entrenar nuestro modelo de machine learning para armar un sistema de recomendación.
 
+
+
+
+<div style="display: flex; align-items: center;">
+  <a href="https://www.linkedin.com/in/darío-aveiro/" style="margin-right: 10px;">
+    <img src="./images/in_linked_linkedin_media_social_icon_124259.png" alt="LinkedIn" width="40" height="40">
+  </a>
