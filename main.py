@@ -3,7 +3,11 @@ import pandas as pd
 import numpy as np
 
 
-
+# cargamos los datos
+user_reviews_final = pd.read_csv('datasets/user_reviews_final.csv',low_memory=False)
+user_items_explode = pd.read_csv('datasets/user_items_explode.csv',low_memory=False)
+steam_games_clean= pd.read_csv('datasets/steam_games_clean.csv',low_memory=False)
+tabla = pd.read_csv("datasets/tabla.csv", sep=",")
 
 
 app = FastAPI()
