@@ -23,6 +23,8 @@ def PlayTimeGenre(genre: str):
     max_playtime_year = genre_df.groupby('year')['playtime_forever'].sum().idxmax()
 
     return json.dumps({'genre': genre, 'max_playtime_year': int(max_playtime_year)})
+    except Exception as e:
+        return {'error': str(e), 'traceback': traceback.format_exc()}
 
 
 
