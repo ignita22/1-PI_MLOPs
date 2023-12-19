@@ -15,7 +15,7 @@ app = FastAPI()
 
 @app.get('/PlayTimeGenre/{genre}')
 
-def PlayTimeGenre(genre: str):
+async def PlayTimeGenre(genre: str):
     # Filtrar por el género especificado
     genre_df = tabla[tabla['genres'].str.contains(genre, case=False, na=False)].head(10000)
 
@@ -30,7 +30,7 @@ def PlayTimeGenre(genre: str):
 
 @app.get('/UserForGenre/{genre}')
 
-def UserForGenre(genre):
+async def UserForGenre(genre: str):
 
     genre_data = tabla[tabla['genres'].str.contains(genre, case=False)]
 
