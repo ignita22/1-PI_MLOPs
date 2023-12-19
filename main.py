@@ -17,20 +17,12 @@ app = FastAPI()
 
 def PlayTimeGenre(genre: str):
     # Filtrar por el género especificado
-    sample_size = 10000  # Definir el tamaño de la muestra
-    total_rows = tabla.shape[0]
+    genre_df = tabla[tabla['genres'].str.contains(genre, case=False, na=False)].head(10000)
 
-    if total_rows > sample_size:
-        random_indices = random.sample(range(total_rows), sample_size)
-        genre_df = tabla.loc[random_indices]
-    else:
-        genre_df = tabla
-
-    genre_df = genre_df[genre_df['genres'].str.contains(genre, case=False, na=False)]
-
+    # Encontrar el año con más horas jugadas para ese género
     max_playtime_year = genre_df.groupby('year')['playtime_forever'].sum().idxmax()
 
-    return max_playtime_year
+    return json.dumps({'genre': genre, 'max_playtime_year': int(max_playtime_year)})
 
 
 
