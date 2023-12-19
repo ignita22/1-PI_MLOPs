@@ -22,7 +22,7 @@ def PlayTimeGenre(genre: str):
     # Encontrar el año con más horas jugadas para ese género
     max_playtime_year = genre_df.groupby('year')['playtime_forever'].sum().idxmax()
 
-    return json.dumps({'genre': genre, 'max_playtime_year': int(max_playtime_year)})
+    return {'genre': genre, 'max_playtime_year': int(max_playtime_year)}
     except Exception as e:
         return {'error': str(e), 'traceback': traceback.format_exc()}
 
