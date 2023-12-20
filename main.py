@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 import pandas as pd
 import numpy as np
 
@@ -60,6 +60,8 @@ async def UserForGenre(genre: str):
 
         return resultado  # Devolver el diccionario con la información solicitada
     except Exception as e:
-        # Si hay cualquier otro tipo de excepción, lanzar un error ValueError
-        raise ValueError(f"Error interno: {str(e)}")
+        # Si hay cualquier otro tipo de excepción, lanza un error HTTP 500 con detalles del error
+        raise HTTPException(
+            status_code=500, detail=f"Error interno del servidor: {str(e)}")
+
 
