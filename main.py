@@ -35,7 +35,7 @@ async def UserForGenre(genre: str):
     try:
         # Filtrar por el género específico en el DataFrame tabla
         df_genero = tabla[tabla['genres'].apply(lambda x: genre in x)]
-        df_usuario = df_user_items_explode[df_user_items_explode['item_name'].str.contains(genre, case=False)]
+        df_usuario = user_items_explode[user_items_explode['item_name'].str.contains(genre, case=False)]
 
         if df_genero.empty or df_usuario.empty:
             # Si alguno de los DataFrames está vacío, lanzar un error ValueError
