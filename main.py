@@ -16,13 +16,14 @@ app = FastAPI()
 @app.get('/PlayTimeGenre/{genre}')
 
 async def PlayTimeGenre(genre: str):
-    # Filtrar por el género especificado
-    genre_df = tabla[tabla['genres'].str.contains(genre, case=False, na=False)].head(10000)
-
-    # Encontrar el año con más horas jugadas para ese género
-    max_playtime_year = genre_df.groupby('year')['playtime_forever'].sum().idxmax()
-
-    return {'genre': genre, 'max_playtime_year': int(max_playtime_year)}
+    try: 
+        # Filtrar por el género especificado
+        genre_df = tabla[tabla['genres'].str.contains(genre, case=False, na=False)].head(10000)
+    
+        # Encontrar el año con más horas jugadas para ese género
+        max_playtime_year = genre_df.groupby('year')['playtime_forever'].sum().idxmax()
+    
+        return {'genre': genre, 'max_playtime_year': int(max_playtime_year)}
     except Exception as e:
         return {'error': str(e), 'traceback': traceback.format_exc()}
 
