@@ -98,6 +98,6 @@ async def UsersRecommend(year: int):
             return resultado
         except Exception as e:
         # Devolver un mensaje de error en caso de cualquier otra excepción
-        raise HTTPException(
+            raise HTTPException(
             status_code=500, detail={"Mensaje": f"Error interno del servidor: {str(e)}"})
 
