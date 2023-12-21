@@ -72,7 +72,7 @@ async def UserForGenre(genre: str):
 async def UsersRecommend(year: int):
     
         try: # Filtrar por el año especificado
-            df_specific_year = user_reviews_final[user_reviews_final['fecha'].dt.year == year]
+            df_specific_year = df_user_reviews_final[df_user_reviews_final['fecha'].dt.strftime('%Y').astype(int) == year]
         
             # Fusionar los DataFrames para obtener la información relevante
             df_merged = pd.merge(user_reviews_final[['item_id', 'recommend', 'sentiment_analysis', 'fecha']],
