@@ -71,7 +71,10 @@ async def UsersRecommend(year: int):
     
         try: # Filtrar por el año especificado
             df_specific_year = user_reviews_final[user_reviews_final['fecha'].dt.strftime('%Y').astype(int) == year]
-        
+            
+            # Verificaremos si todos los valores en la columna 'fecha' son fechas válidas en el formato datetime, y forzaremos el formato para filtrar mejor
+            df_user_reviews_final['fecha'] = pd.to_datetime(df_user_reviews_final['fecha'], errors='coerce')
+
             # Fusionar los DataFrames para obtener la información relevante
             df_merged = pd.merge(user_reviews_final[['item_id', 'recommend', 'sentiment_analysis', 'fecha']],
                                  user_items_explode[['item_id', 'item_name']],
