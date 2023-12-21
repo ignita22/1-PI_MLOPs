@@ -70,16 +70,16 @@ async def UserForGenre(genre: str):
 async def UsersRecommend(year: int):
     
         try: # Filtrar por el año especificado
-            df_specific_year = df_user_reviews_final[df_user_reviews_final['fecha'].dt.year == year]
+            df_specific_year = user_reviews_final[user_reviews_final['fecha'].dt.year == year]
         
             # Fusionar los DataFrames para obtener la información relevante
-            df_merged = pd.merge(df_user_reviews_final[['item_id', 'recommend', 'sentiment_analysis', 'fecha']],
-                                 df_user_items_explode[['item_id', 'item_name']],
+            df_merged = pd.merge(user_reviews_final[['item_id', 'recommend', 'sentiment_analysis', 'fecha']],
+                                 user_items_explode[['item_id', 'item_name']],
                                  on='item_id',
                                  how='inner')
         
             # Verificar si no hay datos para el año especificado
-            if df_user_reviews_final.empty:
+            if user_reviews_final.empty:
                 return {"Mensaje": "No hay datos para el año especificado"}
         
             # Filtrar por recomendaciones positivas/neutrales
