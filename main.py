@@ -33,6 +33,8 @@ async def PlayTimeGenre(genre: str):
 
 async def UserForGenre(genre: str):
     try:
+        # Verificaremos si todos los valores en la columna 'fecha' son fechas válidas en el formato datetime, y forzaremos el formato para filtrar mejor
+        df_user_reviews_final['fecha'] = pd.to_datetime(df_user_reviews_final['fecha'], errors='coerce')
         # Filtrar por el género específico en el DataFrame tabla
         df_genero = tabla[tabla['genres'].apply(lambda x: genre in x)]
         df_usuario = user_items_explode[user_items_explode['item_name'].str.contains(genre, case=False)]
