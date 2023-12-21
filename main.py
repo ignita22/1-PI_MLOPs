@@ -65,3 +65,39 @@ async def UserForGenre(genre: str):
             status_code=500, detail=f"Error interno del servidor: {str(e)}")
 
 
+@app.get('/UserRecommend/{year}')
+
+async def UsersRecommend(year: int):
+    
+        try: # Filtrar por el año especificado
+            df_specific_year = df_muestra[df_muestra['fecha'].dt.year == year]
+        
+            # Fusionar los DataFrames para obtener la información relevante
+            df_merged = pd.merge(df_muestra[['item_id', 'recommend', 'sentiment_analysis', 'fecha']],
+                                 df_user_items_explode[['item_id', 'item_name']],
+                                 on='item_id',
+                                 how='inner')
+        
+            # Verificar si no hay datos para el año especificado
+            if df_muestra.empty:
+                return {"Mensaje": "No hay datos para el año especificado"}
+        
+            # Filtrar por recomendaciones positivas/neutrales
+            df_recomendados = df_merged[(df_merged['recommend'] == True) & (
+                df_merged['sentiment_analysis'].isin([1, 2]))]
+        
+            # Verificar si no hay juegos recomendados para el año especificado
+            if df_recomendados.empty:
+                return {"Mensaje": "No hay juegos recomendados para el año especificado"}
+        
+            # Contar las recomendaciones por juego y obtener el top 3
+            conteo_recomendaciones = df_recomendados['item_name'].value_counts().head(3)
+            resultado = [{"Puesto " + str(i + 1): {"Juego": juego, "Recomendaciones": recomendaciones}}
+                         for i, (juego, recomendaciones) in enumerate(conteo_recomendaciones.items())]
+        
+            return resultado
+        except Exception as e:
+        # Devolver un mensaje de error en caso de cualquier otra excepción
+        raise HTTPException(
+            status_code=500, detail={"Mensaje": f"Error interno del servidor: {str(e)}"})
+
