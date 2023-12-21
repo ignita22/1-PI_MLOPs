@@ -70,7 +70,7 @@ async def UserForGenre(genre: str):
 async def UsersRecommend(year: int):
     
         try: # Filtrar por el año especificado
-            df_specific_year = user_reviews_final[user_reviews_final['fecha'].dt.strftime('%Y').astype(int) == year]
+            df_specific_year = user_reviews_final[user_reviews_final['fecha'].dt.year == year]
             
             # Verificaremos si todos los valores en la columna 'fecha' son fechas válidas en el formato datetime, y forzaremos el formato para filtrar mejor
             user_reviews_final['fecha'] = pd.to_datetime(user_reviews_final['fecha'], errors='coerce')
