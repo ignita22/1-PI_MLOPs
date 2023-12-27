@@ -80,6 +80,8 @@ async def UsersRecommend(year: int):
                               user_items_explode[['item_id', 'item_name']],
                                      on='item_id',
                                      how='inner')
+        # Reseteo el índice:
+        df_merged.reset_index(inplace=True)
         
         # Verificar si no hay datos para el año especificado
         if df_specific_year.empty:
