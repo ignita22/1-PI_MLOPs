@@ -68,37 +68,37 @@ async def UserForGenre(genre: str):
 @app.get('/UserRecommend/{year}')
 
 async def UsersRecommend(year: int):
-     try: 
-          # Convertir la columna 'fecha' a datetime si no está en ese formato
-          df_user_reviews_final['fecha'] = pd.to_datetime(df_user_reviews_final['fecha'], errors='coerce')
+    try: 
+        # Convertir la columna 'fecha' a datetime si no está en ese formato
+        df_user_reviews_final['fecha'] = pd.to_datetime(df_user_reviews_final['fecha'], errors='coerce')
         
-          # Filtrar por el año especificado
-          df_specific_year = df_user_reviews_final[df_user_reviews_final['fecha'].dt.year == year]
+        # Filtrar por el año especificado
+        df_specific_year = df_user_reviews_final[df_user_reviews_final['fecha'].dt.year == year]
         
-          # Fusionar los DataFrames para obtener la información relevante
-          df_merged = pd.merge(df_specific_year[['item_id', 'recommend', 'sentiment_analysis', 'fecha']],
-                                 df_user_items_explode[['item_id', 'item_name']],
-                                 on='item_id',
-                                 how='inner')
+        # Fusionar los DataFrames para obtener la información relevante
+        df_merged = pd.merge(df_specific_year[['item_id', 'recommend', 'sentiment_analysis', 'fecha']],
+                              df_user_items_explode[['item_id', 'item_name']],
+                                     on='item_id',
+                                     how='inner')
         
-           # Verificar si no hay datos para el año especificado
-           if df_specific_year.empty:
+        # Verificar si no hay datos para el año especificado
+        if df_specific_year.empty:
               return {"Mensaje": "No hay datos para el año especificado"}
         
-            # Filtrar por recomendaciones positivas/neutrales
-            df_recomendados = df_merged[(df_merged['recommend'] == True) & (
-            df_merged['sentiment_analysis'].isin([1, 2]))]
+        # Filtrar por recomendaciones positivas/neutrales
+        df_recomendados = df_merged[(df_merged['recommend'] == True) & (
+        df_merged['sentiment_analysis'].isin([1, 2]))]
         
-            # Verificar si no hay juegos recomendados para el año especificado
-            if df_recomendados.empty:
+        # Verificar si no hay juegos recomendados para el año especificado
+        if df_recomendados.empty:
                 return {"Mensaje": "No hay juegos recomendados para el año especificado"}
         
-            # Contar las recomendaciones por juego y obtener el top 3
-            conteo_recomendaciones = df_recomendados['item_name'].value_counts().head(3)
-            resultado = [{"Puesto " + str(i + 1): {"Juego": juego, "Recomendaciones": recomendaciones}}
-                         for i, (juego, recomendaciones) in enumerate(conteo_recomendaciones.items())]
+        # Contar las recomendaciones por juego y obtener el top 3
+        conteo_recomendaciones = df_recomendados['item_name'].value_counts().head(3)
+        resultado = [{"Puesto " + str(i + 1): {"Juego": juego, "Recomendaciones": recomendaciones}}
+                        for i, (juego, recomendaciones) in enumerate(conteo_recomendaciones.items())]
         
-          return resultado
+        return resultado
     except Exception as e:
         # Si hay cualquier otro tipo de excepción, lanza un error HTTP 500 con detalles del error
         raise HTTPException(
@@ -128,7 +128,7 @@ async def UsersNotRecommend(year: int):
     
         # Filtrar por recomendaciones negativas
         df_recomendados = df_merged[(df_merged['recommend'] == False) & (
-            df_merged['sentiment_analysis'].isin([1, 2]))]
+        df_merged['sentiment_analysis'].isin([1, 2]))]
     
         # Verificar si no hay juegos recomendados para el año especificado
         if df_recomendados.empty:
@@ -142,7 +142,7 @@ async def UsersNotRecommend(year: int):
         return resultado
     except Exception as e:
         # Si hay cualquier otro tipo de excepción, lanza un error HTTP 500 con detalles del error
-      raise HTTPException(
+        raise HTTPException(
             status_code=500, detail=f"Error interno del servidor: {str(e)}")    
 
 
@@ -181,7 +181,7 @@ async def Sentiment_analysis(year: int):
         return result
     except Exception as e:
         # Si hay cualquier otro tipo de excepción, lanza un error HTTP 500 con detalles del error
-      raise HTTPException(
+        raise HTTPException(
             status_code=500, detail=f"Error interno del servidor: {str(e)}")    
   
 
