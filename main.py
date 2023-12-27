@@ -68,26 +68,26 @@ async def UserForGenre(genre: str):
 @app.get('/UserRecommend/{year}')
 
 async def UsersRecommend(year: int):
-    
-        try: # Filtrar por el año especificado
-            df_specific_year = user_reviews_final[user_reviews_final['fecha'].dt.year == year]
-            
-            # Verificaremos si todos los valores en la columna 'fecha' son fechas válidas en el formato datetime, y forzaremos el formato para filtrar mejor
-            user_reviews_final['fecha'] = pd.to_datetime(user_reviews_final['fecha'], errors='coerce')
-
-            # Fusionar los DataFrames para obtener la información relevante
-            df_merged = pd.merge(user_reviews_final[['item_id', 'recommend', 'sentiment_analysis', 'fecha']],
-                                 user_items_explode[['item_id', 'item_name']],
+     try: 
+          # Convertir la columna 'fecha' a datetime si no está en ese formato
+          df_user_reviews_final['fecha'] = pd.to_datetime(df_user_reviews_final['fecha'], errors='coerce')
+        
+          # Filtrar por el año especificado
+          df_specific_year = df_user_reviews_final[df_user_reviews_final['fecha'].dt.year == year]
+        
+          # Fusionar los DataFrames para obtener la información relevante
+          df_merged = pd.merge(df_specific_year[['item_id', 'recommend', 'sentiment_analysis', 'fecha']],
+                                 df_user_items_explode[['item_id', 'item_name']],
                                  on='item_id',
                                  how='inner')
         
-            # Verificar si no hay datos para el año especificado
-            if user_reviews_final.empty:
-                return {"Mensaje": "No hay datos para el año especificado"}
+           # Verificar si no hay datos para el año especificado
+           if df_specific_year.empty:
+              return {"Mensaje": "No hay datos para el año especificado"}
         
             # Filtrar por recomendaciones positivas/neutrales
             df_recomendados = df_merged[(df_merged['recommend'] == True) & (
-                df_merged['sentiment_analysis'].isin([1, 2]))]
+            df_merged['sentiment_analysis'].isin([1, 2]))]
         
             # Verificar si no hay juegos recomendados para el año especificado
             if df_recomendados.empty:
@@ -98,9 +98,90 @@ async def UsersRecommend(year: int):
             resultado = [{"Puesto " + str(i + 1): {"Juego": juego, "Recomendaciones": recomendaciones}}
                          for i, (juego, recomendaciones) in enumerate(conteo_recomendaciones.items())]
         
-            return resultado
-        except Exception as e:
-        # Devolver un mensaje de error en caso de cualquier otra excepción
-            raise HTTPException(
-            status_code=500, detail={"Mensaje": f"Error interno del servidor: {str(e)}"})
+          return resultado
+    except Exception as e:
+        # Si hay cualquier otro tipo de excepción, lanza un error HTTP 500 con detalles del error
+        raise HTTPException(
+            status_code=500, detail=f"Error interno del servidor: {str(e)}")
+ 
+
+
+@app.get('/UserNotRecommend/{year}') 
+
+async def UsersNotRecommend(year: int):
+    try:
+        # Convertir la columna 'fecha' a datetime si no está en ese formato
+        df_user_reviews_final['fecha'] = pd.to_datetime(df_user_reviews_final['fecha'], errors='coerce')
+    
+        # Filtrar por el año especificado
+        df_specific_year = df_user_reviews_final[df_user_reviews_final['fecha'].dt.year == year]
+    
+        # Fusionar los DataFrames para obtener la información relevante
+        df_merged = pd.merge(df_specific_year[['item_id', 'recommend', 'sentiment_analysis', 'fecha']],
+                             df_user_items_explode[['item_id', 'item_name']],
+                             on='item_id',
+                             how='inner')
+    
+        # Verificar si no hay datos para el año especificado
+        if df_specific_year.empty:
+            return {"Mensaje": "No hay datos para el año especificado"}
+    
+        # Filtrar por recomendaciones negativas
+        df_recomendados = df_merged[(df_merged['recommend'] == False) & (
+            df_merged['sentiment_analysis'].isin([1, 2]))]
+    
+        # Verificar si no hay juegos recomendados para el año especificado
+        if df_recomendados.empty:
+            return {"Mensaje": "No hay juegos recomendados para el año especificado"}
+    
+        # Contar las No recomendaciones por juego y obtener el top 3
+        conteo_recomendaciones = df_recomendados['item_name'].value_counts().head(3)
+        resultado = [{"Puesto " + str(i + 1): {"Juego": juego, "Recomendaciones": recomendaciones}}
+                     for i, (juego, recomendaciones) in enumerate(conteo_recomendaciones.items())]
+    
+        return resultado
+    except Exception as e:
+        # Si hay cualquier otro tipo de excepción, lanza un error HTTP 500 con detalles del error
+      raise HTTPException(
+            status_code=500, detail=f"Error interno del servidor: {str(e)}")    
+
+
+@app.get('/Sentiment_analysis/{year}')
+
+async def Sentiment_analysis(year: int):
+    try:
+        # Fusionar los DataFrames para obtener la información relevante
+        df_merged = pd.merge(df_user_reviews_final[['sentiment_analysis', 'item_id']],
+                             df_steam_games_clean[['item_id', 'release_date']],
+                             left_on='item_id',
+                             right_on='item_id',
+                             how='inner')
+        
+        # Cambio el formato de la columna 'release_date' 
+        df_merged['release_date'] = pd.to_datetime(df_merged['release_date'])
+        
+        # Filtrar por el año especificado en los datos de Steam
+        df_year = df_merged[df_merged['release_date'].dt.year == year]
+        
+        if df_year.empty:
+            # Devolver un mensaje si no hay datos para el año especificado
+            return {"Mensaje": "No hay datos para el año especificado"}
+    
+        # Contar la cantidad de registros por análisis de sentimiento
+        sentiment_counts = df_year['sentiment_analysis'].value_counts().reset_index()
+        sentiment_counts.columns = ['Sentimiento', 'Cantidad']
+    
+        # Mapear los códigos de sentimiento a etiquetas
+        sentiment_labels = {0: 'Negative', 1: 'Neutral', 2: 'Positive'}
+        sentiment_counts['Sentimiento'] = sentiment_counts['Sentimiento'].map(sentiment_labels)
+    
+        # Crear el diccionario de retorno
+        result = {row['Sentimiento']: row['Cantidad'] for _, row in sentiment_counts.iterrows()}
+        
+        return result
+    except Exception as e:
+        # Si hay cualquier otro tipo de excepción, lanza un error HTTP 500 con detalles del error
+      raise HTTPException(
+            status_code=500, detail=f"Error interno del servidor: {str(e)}")    
+  
 
