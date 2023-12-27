@@ -70,14 +70,14 @@ async def UserForGenre(genre: str):
 async def UsersRecommend(year: int):
     try: 
         # Convertir la columna 'fecha' a datetime si no está en ese formato
-        df_user_reviews_final['fecha'] = pd.to_datetime(df_user_reviews_final['fecha'], errors='coerce')
+        user_reviews_final['fecha'] = pd.to_datetime(user_reviews_final['fecha'], errors='coerce')
         
         # Filtrar por el año especificado
-        df_specific_year = df_user_reviews_final[df_user_reviews_final['fecha'].dt.year == year]
+        df_specific_year = user_reviews_final[user_reviews_final['fecha'].dt.year == year]
         
         # Fusionar los DataFrames para obtener la información relevante
         df_merged = pd.merge(df_specific_year[['item_id', 'recommend', 'sentiment_analysis', 'fecha']],
-                              df_user_items_explode[['item_id', 'item_name']],
+                              user_items_explode[['item_id', 'item_name']],
                                      on='item_id',
                                      how='inner')
         
@@ -111,14 +111,14 @@ async def UsersRecommend(year: int):
 async def UsersNotRecommend(year: int):
     try:
         # Convertir la columna 'fecha' a datetime si no está en ese formato
-        df_user_reviews_final['fecha'] = pd.to_datetime(df_user_reviews_final['fecha'], errors='coerce')
+        user_reviews_final['fecha'] = pd.to_datetime(user_reviews_final['fecha'], errors='coerce')
     
         # Filtrar por el año especificado
-        df_specific_year = df_user_reviews_final[df_user_reviews_final['fecha'].dt.year == year]
+        df_specific_year = user_reviews_final[user_reviews_final['fecha'].dt.year == year]
     
         # Fusionar los DataFrames para obtener la información relevante
         df_merged = pd.merge(df_specific_year[['item_id', 'recommend', 'sentiment_analysis', 'fecha']],
-                             df_user_items_explode[['item_id', 'item_name']],
+                             user_items_explode[['item_id', 'item_name']],
                              on='item_id',
                              how='inner')
     
@@ -151,8 +151,8 @@ async def UsersNotRecommend(year: int):
 async def Sentiment_analysis(year: int):
     try:
         # Fusionar los DataFrames para obtener la información relevante
-        df_merged = pd.merge(df_user_reviews_final[['sentiment_analysis', 'item_id']],
-                             df_steam_games_clean[['item_id', 'release_date']],
+        df_merged = pd.merge(user_reviews_final[['sentiment_analysis', 'item_id']],
+                             steam_games_clean[['item_id', 'release_date']],
                              left_on='item_id',
                              right_on='item_id',
                              how='inner')
