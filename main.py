@@ -8,6 +8,7 @@ user_reviews_final = pd.read_csv('datasets/df_user_reviews_final.csv',low_memory
 user_items_explode = pd.read_csv('datasets/df_user_items_explode.csv',low_memory=False)
 steam_games_clean= pd.read_csv('datasets/df_steam_games_clean.csv',low_memory=False)
 tabla = pd.read_csv("datasets/tabla.csv", sep=",")
+simil_coseno = pd.read_csv('datasets/df_simil_coseno.csv',low_memory=False)
 
 
 app = FastAPI()
@@ -189,3 +190,15 @@ async def Sentiment_analysis(year: int):
             status_code=500, detail=f"Error interno del servidor: {str(e)}")    
   
 
+@app.get('/Recomendacion_juego/{item_id: str}')
+
+async def recomendacion_game(item_id: str):
+    try:
+
+        # Obtenemos la columna correspondiente para cada id
+        columna_juego = df_simil_coseno[item_id]
+        
+        # Obtener los juegos con los mejores puntajes (menores que 1)
+        games = columna_juego[columna_juego < 1.0].sort_values(ascending=False).head(5).index.tolist()
+    
+        return games
