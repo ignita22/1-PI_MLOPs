@@ -196,7 +196,7 @@ async def recomendacion_game(item_id: str):
     try:
 
         # Obtenemos la columna correspondiente para cada id
-        columna_juego = df_simil_coseno[item_id]
+        columna_juego = simil_coseno[item_id]
         
         # Obtener los juegos con los mejores puntajes (menores que 1)
         games = columna_juego[columna_juego < 1.0].sort_values(ascending=False).head(5).index.tolist()
