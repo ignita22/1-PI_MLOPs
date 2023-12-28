@@ -79,7 +79,8 @@ async def UsersRecommend(year: int):
         df_merged = pd.merge(df_specific_year[['item_id', 'recommend', 'sentiment_analysis', 'fecha']],
                               user_items_explode[['item_id', 'item_name']],
                                      on='item_id',
-                                     how='inner')
+                                     how='inner',
+                                    index=True)
         
         # Modificamos el formato de 'item_id' a 'int'
         df_merged['item_id'] = df_merged['item_id'].astype(int)
