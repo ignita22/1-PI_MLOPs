@@ -190,7 +190,7 @@ async def Sentiment_analysis(year: int):
             status_code=500, detail=f"Error interno del servidor: {str(e)}")    
   
 
-@app.get('/Recomendacion_juego/{item_id: str}')
+@app.get('/recomendacion_game/{item_id: str}')
 
 async def recomendacion_game(item_id: str):
     try:
