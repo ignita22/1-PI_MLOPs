@@ -190,7 +190,7 @@ async def Sentiment_analysis(year: int):
             status_code=500, detail=f"Error interno del servidor: {str(e)}")    
   
 
-@app.get('/Recomendacion_juego/{item_id: str}')
+@app.get('/recomendacion_game/{item_id: str}')
 
 async def recomendacion_game(item_id: str):
     try:
@@ -202,3 +202,10 @@ async def recomendacion_game(item_id: str):
         games = columna_juego[columna_juego < 1.0].sort_values(ascending=False).head(5).index.tolist()
     
         return games
+    except HTTPException as http_error:
+    # Manejo de excepciones de HTTPException si las necesitas capturar específicamente
+        raise http_error
+    except Exception as e:
+        # Si hay cualquier otro tipo de excepción, lanza un error HTTP 500 con detalles del error
+        raise HTTPException(
+            status_code=500, detail=f"Error interno del servidor: {str(e)}")
