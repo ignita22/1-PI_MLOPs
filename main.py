@@ -76,6 +76,9 @@ async def UsersRecommend(year: int):
         # Filtrar por el año especificado
         df_specific_year = user_reviews_final[user_reviews_final['fecha'].dt.year == year]
         
+        # Reindexar el DataFrame filtrado por el año
+        df_specific_year = df_specific_year.reindex()
+        
         # Fusionar los DataFrames para obtener la información relevante
         df_merged = pd.merge(df_specific_year[['item_id', 'recommend', 'sentiment_analysis', 'fecha']],
                               user_items_explode[['item_id', 'item_name']],
