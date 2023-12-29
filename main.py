@@ -107,6 +107,10 @@ async def UsersRecommend(year: int):
                         for i, (juego, recomendaciones) in enumerate(conteo_recomendaciones.values())]
         
         return resultado
+    except Exception as e:
+        # Si hay cualquier otro tipo de excepción, lanza un error HTTP 500 con detalles del error
+        raise HTTPException(
+            status_code=500, detail=f"Error interno del servidor: {str(e)}")
     
  
 
