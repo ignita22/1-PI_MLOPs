@@ -104,7 +104,7 @@ async def UsersRecommend(year: int):
         # Contar las recomendaciones por juego y obtener el top 3
         conteo_recomendaciones = df_recomendados['item_name'].value_counts().head(3)
         resultado = [{"Puesto " + str(i + 1): {"Juego": juego, "Recomendaciones": recomendaciones}}
-                        for i, (juego, recomendaciones) in enumerate(conteo_recomendaciones.items())]
+                        for i, (juego, recomendaciones) in enumerate(conteo_recomendaciones.values())]
         
         return resultado
     except Exception as e:
