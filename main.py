@@ -76,13 +76,17 @@ async def UsersRecommend(year: int):
         # Filtrar por el año especificado
         df_specific_year = user_reviews_final[user_reviews_final['fecha'].dt.year == year]
          
-        # Fusionar los DataFrames para obtener la información relevante
-        # Suponiendo que df_specific_year y df_user_items_explode tienen un índice común en 'item_id'
-        df_merged = df_specific_year[['item_id', 'recommend', 'sentiment_analysis', 'fecha']].join(
-        user_items_explode.set_index('item_id')['item_name'], how='inner')
-
-
+        # Asegúrate de que las columnas que usarás para fusionar tengan el mismo nombre
+        # Puedes renombrar la columna si es necesario
+        df_specific_year.rename(columns={'item_id': 'item_id'}, inplace=True)
         
+        # Realiza la fusión utilizando merge
+        df_merged = pd.merge(
+            df_specific_year[['item_id', 'recommend', 'sentiment_analysis', 'fecha']],
+            df_user_items_explode[['item_id', 'item_name']],
+            on='item_id',
+            how='inner')
+
         # Verificar si no hay datos para el año especificado
         if df_specific_year.empty:
               return {"Mensaje": "No hay datos para el año especificado"}
