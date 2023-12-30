@@ -80,20 +80,17 @@ async def UsersRecommend(year: int):
         # Puedes renombrar la columna si es necesario
         df_specific_year.rename(columns={'item_id': 'item_id'}, inplace=True)
         
-        # Realiza la fusión utilizando merge
-        df_merged = pd.merge(
-            df_specific_year[['item_id', 'recommend', 'sentiment_analysis', 'fecha']],
-            user_items_explode[['item_id', 'item_name']],
-            on='item_id',
-            how='inner')
+        # Suponiendo que df_specific_year y df_user_items_explode tienen un índice común en 'item_id'
+        df_join = df_specific_year[['item_id', 'recommend', 'sentiment_analysis', 'fecha']].join(
+        df_user_items_explode.set_index['item_id']['item_name'], on='item_id', how='inner')
 
         # Verificar si no hay datos para el año especificado
         if df_specific_year.empty:
               return {"Mensaje": "No hay datos para el año especificado"}
         
         # Filtrar por recomendaciones positivas/neutrales
-        df_recomendados = df_merged[(df_merged['recommend'] == True) & (
-        df_merged['sentiment_analysis'].isin([1, 2]))]
+        df_recomendados = df_join[(df_join['recommend'] == True) & (
+        df_join['sentiment_analysis'].isin([1, 2]))]
         
         # Verificar si no hay juegos recomendados para el año especificado
         if df_recomendados.empty:
