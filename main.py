@@ -75,19 +75,13 @@ async def UsersRecommend(year: int):
         
         # Filtrar por el año especificado
         df_specific_year = user_reviews_final[user_reviews_final['fecha'].dt.year == year]
-        
-        # Reindexar el DataFrame filtrado por el año
-        df_specific_year = df_specific_year.reset_index(drop=True)
-        
+         
         # Fusionar los DataFrames para obtener la información relevante
         df_merged = pd.merge(df_specific_year[['item_id', 'recommend', 'sentiment_analysis', 'fecha']],
                               user_items_explode[['item_id', 'item_name']],
                                      on='item_id',
                                      how='inner',
                                     index=True).reset_index(drop=True)
-        
-        # Modificamos el formato de 'item_id' a 'int'
-        df_merged['item_id'] = df_merged['item_id'].astype(int)
         
         # Verificar si no hay datos para el año especificado
         if df_specific_year.empty:
@@ -118,10 +112,7 @@ async def UsersRecommend(year: int):
 @app.get('/UserNotRecommend/{year}') 
 
 async def UsersNotRecommend(year: int):
-    try:
-        # Convertir la columna 'fecha' a datetime si no está en ese formato
-        user_reviews_final['fecha'] = pd.to_datetime(user_reviews_final['fecha'], errors='coerce')
-    
+    try
         # Filtrar por el año especificado
         df_specific_year = user_reviews_final[user_reviews_final['fecha'].dt.year == year]
     
