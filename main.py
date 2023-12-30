@@ -79,7 +79,7 @@ async def UsersRecommend(year: int):
         # Fusionar los DataFrames para obtener la información relevante
         # Suponiendo que df_specific_year y df_user_items_explode tienen un índice común en 'item_id'
         df_merged = df_specific_year[['item_id', 'recommend', 'sentiment_analysis', 'fecha']].join(
-        user_items_explode.set_index('item_id')['item_name'], on='item_id', how='inner')
+        user_items_explode.set_index('item_id')['item_name'], how='inner')
 
 
         
@@ -119,7 +119,8 @@ async def UsersNotRecommend(year: int):
         # Fusionar los DataFrames para obtener la información relevante
         # Suponiendo que df_specific_year y df_user_items_explode tienen un índice común en 'item_id'
         df_merged = df_specific_year[['item_id', 'recommend', 'sentiment_analysis', 'fecha']].join(
-        user_items_explode.set_index('item_id')['item_name'], on='item_id', how='inner')
+        user_items_explode.set_index('item_id')['item_name'], how='inner')
+
     
         # Verificar si no hay datos para el año especificado
         if df_specific_year.empty:
