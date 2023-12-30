@@ -126,6 +126,7 @@ async def UsersNotRecommend(year: int):
 
 async def Sentiment_analysis(year: int):
     try:
+    
         # Convertir la columna 'fecha' a datetime si no está en ese formato
         user_reviews_final['fecha'] = pd.to_datetime(user_reviews_final['fecha'], errors='coerce')
     
@@ -135,16 +136,15 @@ async def Sentiment_analysis(year: int):
         if df_year.empty:
             return {"error": "No hay datos para el año proporcionado"}
     
-         # Obtener la sentiment_analysis de registros para cada categoría de análisis de sentimiento
-        negative_records = df_year[df_year['sentiment_analysis'] == 0]['sentiment_analysis'].sum()
-        neutral_records = df_year[df_year['sentiment_analysis'] == 1]['sentiment_analysis'].sum()
-        positive_records = df_year[df_year['sentiment_analysis'] == 2]['sentiment_analysis'].sum()
+        # Obtener la cantidad de registros para cada categoría de análisis de sentimiento
+        sentiment_counts = df_year['sentiment_analysis'].value_counts()
     
         # Crear el resultado en el formato deseado
-        result = {"Negative": negative_records,
-                  "Neutral": neutral_records,
-                  "Positive": positive_records}
-        
+        result = {
+            "Negative": sentiment_counts[0],
+            "Neutral": sentiment_counts[1],
+            "Positive": sentiment_counts[2]}
+    
         return result
     except Exception as e:
         # Si hay cualquier otro tipo de excepción, lanza un error HTTP 500 con detalles del error
