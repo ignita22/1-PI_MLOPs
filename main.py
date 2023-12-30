@@ -83,7 +83,7 @@ async def UsersRecommend(year: int):
         # Realiza la fusión utilizando merge
         df_merged = pd.merge(
             df_specific_year[['item_id', 'recommend', 'sentiment_analysis', 'fecha']],
-            df_user_items_explode[['item_id', 'item_name']],
+            user_items_explode[['item_id', 'item_name']],
             on='item_id',
             how='inner')
 
