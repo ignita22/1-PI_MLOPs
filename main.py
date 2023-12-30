@@ -129,7 +129,7 @@ async def UsersNotRecommend(year: int):
 
 async def Sentiment_analysis(year: int):
     try:
-      
+
         # Convertir la columna 'fecha' a datetime si no está en ese formato
         user_reviews_final['fecha'] = pd.to_datetime(user_reviews_final['fecha'], errors='coerce')
     
@@ -141,10 +141,10 @@ async def Sentiment_analysis(year: int):
     
         # Contar la cantidad de registros por análisis de sentimiento
         sentiment_counts = df_year['sentiment_analysis'].value_counts().reset_index()
-        sentiment_counts.rename(columns={'index': 'sentiment_analysis', 'sentiment_analysis': 'Cantidad'}, inplace=True)
+        sentiment_counts.rename(columns={'index': 'Sentimiento', 'sentiment_analysis': 'Cantidad'}, inplace=True)
     
-        # Crear el diccionario de retorno
-        result = {row['sentiment_analysis']: row['Cantidad'] for _, row in sentiment_counts.iterrows()}
+        # Convertir el DataFrame a un diccionario
+        result = sentiment_counts.to_dict()
     
         return result
 
