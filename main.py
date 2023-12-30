@@ -76,12 +76,15 @@ async def UsersRecommend(year: int):
         # Filtrar por el año especificado
         df_specific_year = user_reviews_final[user_reviews_final['fecha'].dt.year == year]
         
+        # Reindexar el DataFrame filtrado por el año
+        df_specific_year = df_specific_year.reset_index(drop=True)
+        
         # Fusionar los DataFrames para obtener la información relevante
         df_merged = pd.merge(df_specific_year[['item_id', 'recommend', 'sentiment_analysis', 'fecha']],
                               user_items_explode[['item_id', 'item_name']],
                                      on='item_id',
                                      how='inner',
-                                    index=True)
+                                    index=True).reset_index(drop=True)
         
         # Modificamos el formato de 'item_id' a 'int'
         df_merged['item_id'] = df_merged['item_id'].astype(int)
@@ -101,13 +104,14 @@ async def UsersRecommend(year: int):
         # Contar las recomendaciones por juego y obtener el top 3
         conteo_recomendaciones = df_recomendados['item_name'].value_counts().head(3)
         resultado = [{"Puesto " + str(i + 1): {"Juego": juego, "Recomendaciones": recomendaciones}}
-                        for i, (juego, recomendaciones) in enumerate(conteo_recomendaciones.items())]
+                        for i, (juego, recomendaciones) in enumerate(conteo_recomendaciones.values())]
         
         return resultado
     except Exception as e:
         # Si hay cualquier otro tipo de excepción, lanza un error HTTP 500 con detalles del error
         raise HTTPException(
             status_code=500, detail=f"Error interno del servidor: {str(e)}")
+    
  
 
 
@@ -125,7 +129,7 @@ async def UsersNotRecommend(year: int):
         df_merged = pd.merge(df_specific_year[['item_id', 'recommend', 'sentiment_analysis', 'fecha']],
                              user_items_explode[['item_id', 'item_name']],
                              on='item_id',
-                             how='inner')
+                             how='inner').reset_index(drop=True)
     
         # Verificar si no hay datos para el año especificado
         if df_specific_year.empty:
@@ -160,7 +164,7 @@ async def Sentiment_analysis(year: int):
                              steam_games_clean[['item_id', 'release_date']],
                              left_on='item_id',
                              right_on='item_id',
-                             how='inner')
+                             how='inner').reset_index(drop=True)
         
         # Cambio el formato de la columna 'release_date' 
         df_merged['release_date'] = pd.to_datetime(df_merged['release_date'])
