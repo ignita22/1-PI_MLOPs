@@ -35,8 +35,18 @@ En el dataset user_reviews, crearemos una columna llamada 'sentiment_analysis' a
     Según el año de lanzamiento, se devuelve una lista con la cantidad de registros de reseñas de usuarios que se encuentren categorizados con un análisis de sentimiento.
   
 # Modelo de aprendizaje automático:
-Se propone entrenar nuestro modelo de machine learning para armar un sistema de recomendación.
 
+Se propone entrenar nuestro modelo de machine learning para armar un sistema de recomendación.
+Una vez que toda la data es consumible por la API, está lista para consumir por los departamentos de Analytics y Machine Learning, y nuestro EDA nos permite entender bien los datos a los que tenemos acceso, es hora de entrenar nuestro modelo de machine learning para armar un sistema de recomendación. En este caso, yo utilicé el modelo de recomendación item-item.
+
+
+Si es un sistema de recomendación item-item:
++ def **recomendacion_juego( *`id de producto`* )**:
+    Ingresando el id de producto, deberíamos recibir una lista con 5 juegos recomendados similares al ingresado.
+
+Si es un sistema de recomendación user-item:
++ def **recomendacion_usuario( *`id de usuario`* )**:
+    Ingresando el id de un usuario, deberíamos recibir una lista con 5 juegos recomendados para dicho usuario.
 
 
 
