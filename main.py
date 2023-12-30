@@ -126,7 +126,7 @@ async def UsersNotRecommend(year: int):
 
 async def Sentiment_analysis(year: int):
     try:
-    
+
         # Convertir la columna 'fecha' a datetime si no está en ese formato
         user_reviews_final['fecha'] = pd.to_datetime(user_reviews_final['fecha'], errors='coerce')
     
@@ -136,16 +136,15 @@ async def Sentiment_analysis(year: int):
         if df_year.empty:
             return {"error": "No hay datos para el año proporcionado"}
     
-        # Obtener la cantidad de registros para cada categoría de análisis de sentimiento
-        sentiment_counts = df_year['sentiment_analysis'].value_counts()
+        # Contar la cantidad de registros por análisis de sentimiento
+        sentiment_counts = df_year['sentiment_analysis'].value_counts().reset_index()
+        sentiment_counts.rename(columns={'index': 'sentiment_analysis', 'sentiment_analysis': 'sentiment_analysis'}, inplace=True)
     
-        # Crear el resultado en el formato deseado
-        result = {
-            "Negative": sentiment_counts[0],
-            "Neutral": sentiment_counts[1],
-            "Positive": sentiment_counts[2]}
+        # Convertir el DataFrame a un diccionario
+        result = sentiment_counts.to_dict()
     
         return result
+
     except Exception as e:
         # Si hay cualquier otro tipo de excepción, lanza un error HTTP 500 con detalles del error
         raise HTTPException(
