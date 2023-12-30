@@ -135,15 +135,17 @@ async def Sentiment_analysis(year: int):
         if df_year.empty:
             return {"error": "No hay datos para el año proporcionado"}
     
-        # Contar la cantidad de registros por análisis de sentimiento
-        sentiment_counts = df_year['sentiment_analysis'].value_counts().reset_index()
-        sentiment_counts.rename(columns={'index': 'Sentimiento', 'sentiment_analysis': 'Cantidad'}, inplace=True)
+         # Obtener la sentiment_analysis de registros para cada categoría de análisis de sentimiento
+        negative_records = df_year[df_year['sentiment_analysis'] == 0]['sentiment_analysis'].sum()
+        neutral_records = df_year[df_year['sentiment_analysis'] == 1]['sentiment_analysis'].sum()
+        positive_records = df_year[df_year['sentiment_analysis'] == 2]['sentiment_analysis'].sum()
     
-        # Convertir el DataFrame a un diccionario
-        result = sentiment_counts.to_dict()
-    
+        # Crear el resultado en el formato deseado
+        result = {"Negative": negative_records,
+                  "Neutral": neutral_records,
+                  "Positive": positive_records}
+        
         return result
-
     except Exception as e:
         # Si hay cualquier otro tipo de excepción, lanza un error HTTP 500 con detalles del error
         raise HTTPException(
