@@ -79,6 +79,9 @@ async def UsersRecommend(year: int):
         # Asegúrate de que las columnas que usarás para fusionar tengan el mismo nombre
         # Puedes renombrar la columna si es necesario
         df_specific_year.rename(columns={'item_id': 'item_id'}, inplace=True)
+
+        user_items_explode = user_items_explode.reset_index()
+        df_merged = pd.concat([df_specific_year, user_items_explode], axis=1)
         
         # Suponiendo que df_specific_year y df_user_items_explode tienen un índice común en 'item_id'
         df_merged = pd.concat([df_specific_year['item_id'], user_items_explode.set_index('item_id')['item_name']],
