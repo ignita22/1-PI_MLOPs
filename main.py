@@ -141,10 +141,10 @@ async def Sentiment_analysis(year: int):
     
         # Contar la cantidad de registros por análisis de sentimiento
         sentiment_counts = df_year['sentiment_analysis'].value_counts().reset_index()
-        sentiment_counts.rename(columns={'index': 'Sentimiento', 'sentiment_analysis': 'Cantidad'}, inplace=True)
+        sentiment_counts.rename(columns={'index': 'sentiment_analysis', 'sentiment_analysis': 'Cantidad'}, inplace=True)
     
         # Crear el diccionario de retorno
-        result = {row['Sentimiento']: row['Cantidad'] for _, row in sentiment_counts.iterrows()}
+        result = {row['sentiment_analysis']: row['Cantidad'] for _, row in sentiment_counts.iterrows()}
     
         return result
 
