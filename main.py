@@ -93,8 +93,6 @@ async def UsersRecommend(year: int):
         raise HTTPException(
             status_code=500, detail=f"Error interno del servidor: {str(e)}")
     
- 
-
 
 @app.get('/UserNotRecommend/{year}') 
 
