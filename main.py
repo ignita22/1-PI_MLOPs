@@ -129,35 +129,25 @@ async def UsersNotRecommend(year: int):
 
 async def Sentiment_analysis(year: int):
     try:
-        # Fusionar los DataFrames para obtener la información relevante
-        df_merged = pd.merge(user_reviews_final[['sentiment_analysis', 'item_id']],
-                             steam_games_clean[['item_id', 'release_date']],
-                             left_on='item_id',
-                             right_on='item_id',
-                             how='inner').reset_index(drop=True)
-        
-        # Cambio el formato de la columna 'release_date' 
-        df_merged['release_date'] = pd.to_datetime(df_merged['release_date'])
-        
-        # Filtrar por el año especificado en los datos de Steam
-        df_year = df_merged[df_merged['release_date'].dt.year == year]
-        
+      
+        # Convertir la columna 'fecha' a datetime si no está en ese formato
+        df_user_reviews_final['fecha'] = pd.to_datetime(df_user_reviews_final['fecha'], errors='coerce')
+    
+        # Filtrar por el año especificado
+        df_year = df_user_reviews_final[df_user_reviews_final['fecha'].dt.year == year]
+    
         if df_year.empty:
-            # Devolver un mensaje si no hay datos para el año especificado
-            return {"Mensaje": "No hay datos para el año especificado"}
+            return {"error": "No hay datos para el año proporcionado"}
     
         # Contar la cantidad de registros por análisis de sentimiento
         sentiment_counts = df_year['sentiment_analysis'].value_counts().reset_index()
-        sentiment_counts.columns = ['Sentimiento', 'Cantidad']
-    
-        # Mapear los códigos de sentimiento a etiquetas
-        sentiment_labels = {0: 'Negative', 1: 'Neutral', 2: 'Positive'}
-        sentiment_counts['Sentimiento'] = sentiment_counts['Sentimiento'].map(sentiment_labels)
+        sentiment_counts.rename(columns={'index': 'Sentimiento', 'sentiment_analysis': 'Cantidad'}, inplace=True)
     
         # Crear el diccionario de retorno
         result = {row['Sentimiento']: row['Cantidad'] for _, row in sentiment_counts.iterrows()}
-        
+    
         return result
+
     except Exception as e:
         # Si hay cualquier otro tipo de excepción, lanza un error HTTP 500 con detalles del error
         raise HTTPException(
