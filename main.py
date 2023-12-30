@@ -70,7 +70,6 @@ async def UserForGenre(genre: str):
 
 async def UsersRecommend(year: int):
     try: 
-        
         # Convertir la columna 'fecha' a datetime si no está en ese formato
         user_reviews_final['fecha'] = pd.to_datetime(user_reviews_final['fecha'], errors='coerce')
     
@@ -129,7 +128,6 @@ async def UsersNotRecommend(year: int):
 
 async def Sentiment_analysis(year: int):
     try:
-
         # Convertir la columna 'fecha' a datetime si no está en ese formato
         user_reviews_final['fecha'] = pd.to_datetime(user_reviews_final['fecha'], errors='coerce')
     
@@ -158,7 +156,6 @@ async def Sentiment_analysis(year: int):
 
 async def recomendacion_game(item_id: str):
     try:
-
         # Obtenemos la columna correspondiente para cada id
         columna_juego = simil_coseno[item_id]
         
