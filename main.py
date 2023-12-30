@@ -81,8 +81,11 @@ async def UsersRecommend(year: int):
         df_specific_year.rename(columns={'item_id': 'item_id'}, inplace=True)
         
         # Suponiendo que df_specific_year y df_user_items_explode tienen un índice común en 'item_id'
-        df_join = df_specific_year(['item_id', 'recommend', 'sentiment_analysis', 'fecha']).join(
-        df_user_items_explode.set_index['item_id']['item_name'], on='item_id', how='inner')
+        df_merged = df_specific_year['item_id'].join(
+        df_user_items_explode.set_index('item_id')['item_name'],
+        on='item_id',
+        how='inner')
+
 
         # Verificar si no hay datos para el año especificado
         if df_specific_year.empty:
