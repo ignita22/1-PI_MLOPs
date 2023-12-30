@@ -72,7 +72,7 @@ async def UsersRecommend(year: int):
     try: 
         
         # Convertir la columna 'fecha' a datetime si no está en ese formato
-        df_user_reviews_final['fecha'] = pd.to_datetime(user_reviews_final['fecha'], errors='coerce')
+        user_reviews_final['fecha'] = pd.to_datetime(user_reviews_final['fecha'], errors='coerce')
     
         # Filtrar por el año especificado
         df_specific_year = user_reviews_final[user_reviews_final['fecha'].dt.year == year]
