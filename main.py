@@ -72,16 +72,16 @@ async def UsersRecommend(year: int):
     try: 
         
         # Convertir la columna 'fecha' a datetime si no está en ese formato
-        df_user_reviews_final['fecha'] = pd.to_datetime(df_user_reviews_final['fecha'], errors='coerce')
+        df_user_reviews_final['fecha'] = pd.to_datetime(user_reviews_final['fecha'], errors='coerce')
     
         # Filtrar por el año especificado
-        df_specific_year = df_user_reviews_final[df_user_reviews_final['fecha'].dt.year == year]
+        df_specific_year = user_reviews_final[user_reviews_final['fecha'].dt.year == year]
     
         # Filtrar por recomendaciones positivas
         df_recomendados = df_specific_year[df_specific_year['recommend'] == True]
     
         # Obtener los tres juegos más recomendados
-        df_recomendados_merged = df_recomendados.merge(df_user_items_explode[['item_id', 'item_name']], on='item_id', how='inner')
+        df_recomendados_merged = df_recomendados.merge(user_items_explode[['item_id', 'item_name']], on='item_id', how='inner')
         top3_games = df_recomendados_merged['item_name'].value_counts().head(3)
     
         # Convertir el resultado a un formato de lista de diccionarios
