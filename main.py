@@ -70,41 +70,25 @@ async def UserForGenre(genre: str):
 
 async def UsersRecommend(year: int):
     try: 
+        
         # Convertir la columna 'fecha' a datetime si no está en ese formato
-        user_reviews_final['fecha'] = pd.to_datetime(user_reviews_final['fecha'], errors='coerce')
-        
+        df_user_reviews_final['fecha'] = pd.to_datetime(df_user_reviews_final['fecha'], errors='coerce')
+    
         # Filtrar por el año especificado
-        df_specific_year = user_reviews_final[user_reviews_final['fecha'].dt.year == year]
-         
-        # Asegúrate de que las columnas que usarás para fusionar tengan el mismo nombre
-        # Puedes renombrar la columna si es necesario
-        df_specific_year.rename(columns={'item_id': 'item_id'}, inplace=True)
-
-        user_items_explode = user_items_explode.reset_index()
-        df_merged = pd.concat([df_specific_year, user_items_explode], axis=1)
-        
-        # Suponiendo que df_specific_year y df_user_items_explode tienen un índice común en 'item_id'
-        df_merged = pd.concat([df_specific_year['item_id'], user_items_explode.set_index('item_id')['item_name']],
-        axis=1,)
-
-        # Verificar si no hay datos para el año especificado
-        if df_specific_year.empty:
-              return {"Mensaje": "No hay datos para el año especificado"}
-        
-        # Filtrar por recomendaciones positivas/neutrales
-        df_recomendados = df_join[(df_join['recommend'] == True) & (
-        df_join['sentiment_analysis'].isin([1, 2]))]
-        
-        # Verificar si no hay juegos recomendados para el año especificado
-        if df_recomendados.empty:
-                return {"Mensaje": "No hay juegos recomendados para el año especificado"}
-        
-        # Contar las recomendaciones por juego y obtener el top 3
-        conteo_recomendaciones = df_recomendados['item_name'].value_counts().head(3)
-        resultado = [{"Puesto " + str(i + 1): {"Juego": juego, "Recomendaciones": recomendaciones}}
-                        for i, (juego, recomendaciones) in enumerate(conteo_recomendaciones.items())]
-        
+        df_specific_year = df_user_reviews_final[df_user_reviews_final['fecha'].dt.year == year]
+    
+        # Filtrar por recomendaciones positivas
+        df_recomendados = df_specific_year[df_specific_year['recommend'] == True]
+    
+        # Obtener los tres juegos más recomendados
+        df_recomendados_merged = df_recomendados.merge(df_user_items_explode[['item_id', 'item_name']], on='item_id', how='inner')
+        top3_games = df_recomendados_merged['item_name'].value_counts().head(3)
+    
+        # Convertir el resultado a un formato de lista de diccionarios
+        resultado = [{'Puesto ' + str(i + 1): juego} for i, juego in enumerate(top3_games.index)]
+    
         return resultado
+
     except Exception as e:
         # Si hay cualquier otro tipo de excepción, lanza un error HTTP 500 con detalles del error
         raise HTTPException(
