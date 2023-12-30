@@ -112,7 +112,7 @@ async def UsersRecommend(year: int):
 @app.get('/UserNotRecommend/{year}') 
 
 async def UsersNotRecommend(year: int):
-    try
+    try:
         # Filtrar por el año especificado
         df_specific_year = user_reviews_final[user_reviews_final['fecha'].dt.year == year]
     
