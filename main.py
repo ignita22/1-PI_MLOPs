@@ -107,17 +107,18 @@ async def UsersNotRecommend(year: int):
         # Filtrar por el año especificado
         df_specific_year = user_reviews_final[user_reviews_final['fecha'].dt.year == year]
     
-        # Filtrar por recomendaciones positivas
-        df_recomendados = df_specific_year[df_specific_year['recommend'] == False]
+        # Filtrar por recomendaciones negativas
+        df_no_recomendados = df_specific_year[df_specific_year['recommend'] == False]
     
         # Obtener los tres juegos menos recomendados
-        df_recomendados_merged = df_recomendados.merge(user_items_explode[['item_id', 'item_name']], on='item_id', how='inner')
-        top3_games = df_recomendados_merged['item_name'].value_counts().head(3)
+        df_no_recomendados_merged = df_no_recomendados.merge(user_items_explode[['item_id', 'item_name']], on='item_id', how='inner')
+        bottom3_games = df_no_recomendados_merged['item_name'].value_counts().head(3)
     
         # Convertir el resultado a un formato de lista de diccionarios
-        resultado = [{'Puesto ' + str(i + 1): juego} for i, juego in enumerate(top3_games.index)]
+        resultado = [{'Puesto ' + str(i + 1): juego} for i, juego in enumerate(bottom3_games.index)]
     
         return resultado
+
     except Exception as e:
         # Si hay cualquier otro tipo de excepción, lanza un error HTTP 500 con detalles del error
         raise HTTPException(
